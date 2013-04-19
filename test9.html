@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>实现一个图片浏览的组件，类似QQ相册。从服务端获取一组图片，可以上一张、下一张、放大、缩小、载入时有进度条显示</title>
+		
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	 	
+	<style type="text/css">
+		#cha_img{
+			position:absolute;
+			left:50%;
+			top:50%;
+			width ： 300px;
+		   height: 	400px;
+		   margin-left: -150px;
+		   margin-top : -200px;	
+		}
+		#img{
+			width:300px;
+			height: 300px;
+			overflow:hidden;
+			display:block;
+			height-line:300px;	
+		}
+		#cha_img .button{
+			width: 300px;
+			height: 100px;		
+		}
+		
+	</style>
+	
+	<script type="text/javascript" >
+			function mySort(obj){
+				var arr = [];
+				var objArr = [];
+				if(toString.call(obj)=="[object Array]"){
+					arr = obj;			
+					for(var i=0,j=arr.length;i<j;i++){
+						  objArr.push(hash(arr[i]));					
+					}					
+					subArr(objArr);
+					return arr;
+											
+				}else{
+					return false;				
+				}		
+			}
+			
+			function subArr(objArr){
+					var index=0;
+					for(var i=0,j=objArr.length;i<j;i++){
+						for(var k=0;k<objArr[i].length;k++){						
+								if(objArr[i][k]<objArr[i+1][k]){
+									index = i+1;
+									break;								
+								}else if(objArr[i][k]==objArr[i+1][k]){
+									k++;								
+								}else{
+									index = i;				
+									break;				
+								}						
+						}		
+					}			
+					return subArr(objArr.splice(index,1));
+							
+			}			
+			
+			function hash(str){
+				var obj = {};	
+				var arr = [];
+				for(var i=0,l=str.length;i<l;i++){
+						var key = str[i];
+						if(!obj[key]){
+							obj[key]=1;
+						}else{
+							obj[key]++;						
+						}
+				}
+				for(var pro in obj){
+					arr.push(obj[pro]);				
+				}
+				var data = parseInt(arr.sort().reverse());
+				console.log("data="+data);
+				return data;
+			}		
+			
+			hash("abcaba");
+			myobj(["abcaba","asdfasdf","asdfasdfasdf"]);
+			
+	</script>
+</head>	
+<body>
+	
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+

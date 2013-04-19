@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>demo–筛选效果</title>
+    <style type="text/css">
+		ul{list-style:none;}		
+	 </style>
+    <script type="text/javascript">
+		function begin(){    		
+    		var aUl = document.getElementsByTagName("ul");
+    		var aLi = document.getElementsByTagName("li");
+			var aResult = [];
+			for(var i=0;i<aUl.length;i++){
+				aUl[i].index = i;			
+			}    		
+			for(var j=0;j<aLi.length;j++){
+				aLi[j].onclick = function(){
+					var index = this.parentNode.index;
+					if(!aResult[index]){
+						aResult[index] = document.createElement("div");
+						document.body.appendChild(aResult[index]);
+					}	
+					aResult[index].innerHTML = this.innerHTML;			
+				}			
+			}
+    	}
+    	window.onload =function(){
+				begin();    	
+    	}
+     </script>
+</head>
+<body>
+<ul>
+    <li>立水桥</li>
+    <li>天通苑</li>
+    <li>惠新西街北口</li>
+    <li>雍和宫</li>
+</ul>
+<ul>
+    <li>100</li>
+    <li>1000</li>
+    <li>10000</li>
+</ul>
+<ul>
+    <li>一居室</li>
+    <li>二居室</li>
+    <li>三居室</li>
+</ul>
+</body>
+</html>

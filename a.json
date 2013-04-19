@@ -1,0 +1,17 @@
+{
+	code:0,
+	list:[
+		{
+			src:['xj.jpg','yl.jpg','xj.jpg','jm.jpg'],
+			title:['1111','2222','3333','4444']	
+		},
+		{
+			src:['xj.jpg','yl.jpg','xj.jpg','jm.jpg'],
+			title:['1111','2222','3333','4444']	
+		},
+		{
+			src:['xj.jpg','yl.jpg','xj.jpg','jm.jpg'],
+			title:['1111','2222','3333','4444']	
+		}
+	]
+}

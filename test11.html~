@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>第二关</title>
+		
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" href="test11.css" />
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	 	
+	<style type="text/css">
+		body {
+			font-family: "微软雅黑", "monaco", monospace;
+			font-size: 14px;
+		}
+		#wrapper{
+			width:740px;
+			margin:0 auto;
+			line-height:20px;
+			padding-bottom:20px;
+		}	
+		h1{
+			font-size:60px;
+			line-height:60px;
+			padding:40px 0 ;
+		}
+		ul{
+			list-style:none;		
+		}
+			
+		#desc{
+			padding-bottom:  40px;		
+		}		
+		#desc strong{
+			font-size: 120%;
+			padding:0 4px;
+			color:#f00;		
+		}
+		
+		#page{
+			text-align:center;		
+			padding-top:40px;
+		}
+		#page span{
+			display:inline-block;
+			color:#fff;
+			background: #090;
+			padding:4px 12px;		
+		}
+		#page em{
+			display:block;
+			text-align:center;
+			margin-top: 10px;
+			font-style: normal;		
+		}
+		
+			
+	</style>
+</head>	
+<body>
+	<div id="wrapper">
+		<h1>小球称重</h1>
+		<div id="desc">
+			
+		</div>	
+
+		<div id="balls">
+			<ul>
+			</ul>
+		</div>
+
+		<div id="libra">
+			<div class="platform platform-left">
+				<div class="platform-region"></div>							
+			</div>
+			<div class="platform platform-right">
+				<div class="platform-region"></div>
+			</div>
+			<div class="blance"></div>
+		</div>
+
+		<div id="operation">
+			<button id="do-weight">称一下(有3次机会)</button>
+		</div>		
+		
+		<div id="operation-record">
+			<div>
+				<h3>称重记录:</h3>
+				<ul>			
+				</ul>
+			</div>
+		</div>
+		
+		<div id="result">
+			<h3>结论：</h3>
+			<p>			
+				<select id="ball-idx">
+					<option value="0">请选择</option>				
+				</select>号小球的质量的质量：
+				<input type="radio" id="ball-w-l-0" name="ball-w-l" value="0" />
+				<label for="ball-w-l-0">偏轻</label>			
+				<input type="radio" id="ball-w-l-1" name="ball-w-l" value="1" />
+				<label for="ball-w-l-1">偏重</label>			
+			</p>		
+			<p class="btn">
+				<button id="btn-submit">提交</button>
+			</p>
+		</div>		
+		
+	</div>
+	<div id="page">
+		<span>lalala:</span><br />
+		<em>&copy;lgm</em>
+	</div>
+	
+	<script type="text/javascript" >
+		document.onload = function(){
+			
+		
+		
+		
+		}
+				
+		
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+

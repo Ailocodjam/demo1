@@ -1,0 +1,109 @@
+  <!DOCTYPE html public "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="简单的XHTML页面" />
+<meta name="Description" content="这是一个简单的XHTML页面" />
+<title>简单的XHTML页面</title>
+
+<style type='text/css'>
+	#input1{
+		width:300px;
+		height:100px;
+		border:1px solid #333; 
+		background:red; 
+		margin:10px 20px 30px 40px;
+		position:relative;	
+	}	
+	
+	#ul{
+		display:table-cell;
+		width:400px;
+		height:400px;
+		list-style:none;	
+		font:bold 60px  "宋体";
+		margin:0px;
+		text-align:center;
+		vertical-align:middle;
+		border:1px solid #eee;
+		/* 针对ie的hack
+		*/
+		*display:block;
+		*font-size:175px;
+	}
+</style>
+
+<script type="text/javascript" >
+
+		function begin(){
+				var oUl = $("ul");
+				var input = $("input1");
+				var iNum = 0;				
+				
+				input.onclick = function(){
+						iNum++;
+						var oLi = document.createElement("li");
+						oLi.innerHTML=iNum;
+						oUl.appendChild(oLi);
+				} 
+				
+				input.onmousedown = function(ev){
+						var ev = ev || window.event;
+					//	console.log(input.offsetLeft);
+						disX = ev.clientX - input.offsetLeft;
+						disY = ev.clientY - input.offsetTop;
+						console.log(ev.clientX+","+ev.clientY+","+input.offsetLeft+","+input.offsetTop);
+						this.setCapture && this.setCapture();
+						document.onmousemove = function(ev){
+							var ev = ev || window.event;
+							input.style.left = ev.clientX - disX +"px";
+							input.style.top = ev.clientY - disY +"px";						
+						}
+						document.onmouseup = function(){
+							document.onmousemove = null;
+							document.onmouseup = null;
+							this.releaseCapture && this.releaseCapture();
+						}						
+				}
+				
+				oUl.onmouseover = function(ev){
+					var ev =	ev || window.event;
+					//event.stopPropagation();
+					//event.preventDefault();
+					var target = ev.target || ev.srcElement;
+					if(target.nodeName.toLowerCase()=="li"){
+						target.style.background = "red";				
+					}
+				}
+				
+				oUl.onmouseout = function(ev){
+					var ev = ev||window.event;
+					var target = ev.target ||ev.srcElement;
+					if(target.nodeName.toLowerCase()=="li"){
+						target.style.background = "";					
+					}
+				}
+				
+		}
+	
+		window.onload = function(){ 
+			begin();		
+		}
+		
+		function $(sIdName){
+			return document.getElementById(sIdName);
+		}
+		
+	
+</script>
+</head>
+<body>
+	<input type="button" value="插入节点" id="input1" />
+	<ul id="ul">
+			<li>lgm</li>
+			<li>zj</li>
+			<li>ljm</li>
+			<li>glt</li>
+	</ul>
+</body>
+</html>

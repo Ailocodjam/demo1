@@ -1,0 +1,723 @@
+/**
+ * Created with JetBrains WebStorm.
+ * User: caolj
+ * Date: 12-11-27
+ * Time: 上午10:45
+ * To change this template use File | Settings | File Templates.
+ */
+window.onload=function()
+{
+    init()
+}
+function init()
+{
+    this.oOpen = document.getElementById("open");//底部开始聊天
+    this.oList = document.getElementById("list");//右侧list列表加载
+    this.oList_ul = document.getElementById("list_ul");//右侧ul
+    this.oWebIm = document.getElementById("webIm");
+    this.btn = true;
+    this.oShow = document.getElementById("show");
+    this.oContent = document.getElementById('content')
+    this.oText = document.getElementById("text")
+    this.oSendUp = document.getElementById("send_up");
+    this.listScroll = document.getElementById("scroll");
+    this.oList_li = oList_ul.getElementsByTagName("li")//获取右侧li
+    this.oList_src = document.getElementById("list_src");
+    this.oList_title =document.getElementById("list_title");
+    this.oBtn = document.getElementById("btn")
+    this.ie = !-[1,];
+    this.oBtn_list = document.getElementById("btn_list")
+    this.oBtn_list_ul = oBtn_list.getElementsByTagName("ul")[0]
+    this.oBtn_list_li = oBtn_list.getElementsByTagName("li");
+    this.oSetting = document.getElementById("setting");
+    this.oSetUl = document.getElementById("set_ul")
+    this.aSetLi = oSetUl.getElementsByTagName("li")
+    this.oContent_ul = document.getElementById("content_ul");
+    this.aContent_li =oContent_ul.getElementsByTagName("li")
+    this.oSend_list = document.getElementById("send_list")
+    this.oClose = document.getElementById("close");
+    this.goTop = document.getElementById("go_top");
+    this.goBot = document.getElementById("go_bot")
+    this.iNum =0;
+    this.aClose =[]
+    ajax("json.js",function(str)//获取有点在线人员
+    {
+        var json = eval('('+ str +')')
+        for(var i=0;i<json.list.length;i++)
+        {
+            var oLi = document.createElement("li");
+            oLi.innerHTML = '<div class="list_li">'+'<img src="images/'+json.list[i].title+'.jpg"/>'+'</div>'
+            oLi.name = json.list[i].name;
+            oLi.title = json.list[i].title;
+            oList_ul.appendChild(oLi)
+        }
+    })
+    oWebIm.onclick=function(ev)//阻止冒泡
+    {
+        var ev = ev||window.event;
+        ev.cancelBubble = true
+    }
+    oList.onclick=function(ev)//阻止冒泡
+    {
+        var ev = ev ||window.event;
+        ev.cancelBubble = true
+    }
+    oOpen.onclick=function()
+    {
+        if(btn)
+        {
+            oShow.innerHTML ="隐藏聊天"
+            startRun(oList,{right:0})
+            btn=false
+            for(var i=0; i<oList_li.length;i++)
+                {
+                    oList_li[i].index = i
+                    addEvent(oList_li[i],"click",function()//绑定点击事件
+                    {
+                        if(getStyle(oWebIm,"display") =="none")
+                        {
+                            oWebIm.className ="webim_now"
+                            oList_src.src=""
+                            oList_title.innerHTML=""
+                            oContent.innerHTML =""
+                            oList_src.src = "images/"+this.title+".jpg"
+                            oList_title.innerHTML = this.title
+                            oWebIm.style.display ="block"
+                            oOpen.style.display="none"
+                            getList()
+                            startMove(oSendUp,listScroll,oContent)
+                            setTimeout(function()
+                            {
+                                goScroll(listScroll,oContent)
+                            },200);
+                            var oLi = document.createElement("li");
+                            oLi.title = this.title
+                            oLi.innerHTML ='<a href="#"class="now"></a><div class="tishi">'+this.title+'</div><a href="#" class="x">x</a>'
+                            oContent_ul.appendChild(oLi)
+                        }
+                        else
+                        {
+                            for(var k=0;k<aContent_li.length;k++)
+                            {
+                                if(aContent_li[k].title==this.title)
+                                {
+                                    var attr = aContent_li[k]
+                                    oContent_ul.removeChild(aContent_li[k])
+                                    oContent_ul.insertBefore(attr,aContent_li[0])
+                                    oList_src.src = "images/"+this.title+".jpg"
+                                    oList_title.innerHTML = this.title
+                                    ceshi()
+                                    return false
+                                }
+                            }
+                            oWebIm.className ="webim_now2"
+                            oSend_list.style.display ="block"
+                            oList_src.src=""
+                            oList_title.innerHTML=""
+                            oContent.innerHTML =""
+                            oList_src.src = "images/"+this.title+".jpg"
+                            oList_title.innerHTML = this.title
+                            var oLi = document.createElement("li");
+                            oLi.innerHTML ='<a href="#"class="now"></a><div class="tishi">'+this.title+'</div>'
+                            oLi.title = this.title
+                            oContent_ul.insertBefore(oLi,aContent_li[0])
+                            ceshi()
+                        }
+                    })
+                }
+        }
+        else
+        {
+            oShow.innerHTML ="开始聊天"
+            startRun(oList,{right:-51})
+            btn=true;
+            oList_ul.innerHTML =""
+            ajax("json.js",function(str)
+            {
+                var json = eval('('+ str +')')
+                for(var i=0;i<json.list.length;i++)
+                {
+                    var oLi = document.createElement("li");
+                    oLi.innerHTML = '<div class="list_li">'+'<img src="images/'+json.list[i].title+'.jpg"/>'+'</div>'
+                    oLi.name = json.list[i].name;
+                    oLi.title = json.list[i].title;
+                    oList_ul.appendChild(oLi)
+                }
+            })
+        }
+    }
+    if(ie)
+    {
+        oText.onpropertychange = toChange;
+    }
+    else
+    {
+        oText.oninput = toChange;
+    }
+    goTop.onclick=function()//聊天队列滚动
+    {
+
+        if(aContent_li[0].offsetHeight*aContent_li.length >= oContent_ul.offsetHeight&&aContent_li.length-11>iNum)
+        {
+            iNum++
+            startRun(oContent_ul,{top:-iNum*(aContent_li[0].offsetHeight-2)})
+        }
+        else
+        {
+            return false
+        }
+    }
+    goBot.onclick=function()//聊天队列滚动
+    {
+        if(aContent_li[0].offsetHeight*aContent_li.length >= oContent_ul.offsetHeight&&iNum>0)
+        {
+            iNum--
+            startRun(oContent_ul,{top:-iNum*(aContent_li[0].offsetHeight-2)})
+        }
+        else
+        {
+            return false
+        }
+    }
+    oSetting.onclick=function(ev)//设置按钮
+    {
+        var ev = ev || window.event;
+        oSetUl.style.display = "block"
+        for(var i=0;i<aSetLi.length;i++)
+        {
+            aSetLi[i].onmouseover=function()
+            {
+                for(var i=0;i<aSetLi.length;i++)
+                {
+                    aSetLi[i].className = ""
+                }
+                this.className = "active"
+            }
+        }
+        aSetLi[0].onclick=function(ev)
+        {
+            var ev= ev || window.event;
+            oSetUl.style.display = "none"
+            document.onclick=function()
+            {
+                oWebIm.style.display = "none"
+                oOpen.style.display ="block"
+                oWebIm.className="webim_now"
+                oWebIm.style.display = "none"
+                oOpen.style.display ="block"
+                oSend_list.style.display="none"
+                oContent_ul.innerHTML=""
+                oContent.innerHTML =""
+                return false
+            }
+            ev.cancelBubble = true
+        }
+        aSetLi[1].onclick=function(ev)
+        {
+            var ev =ev||window.event
+            oSetUl.style.display ="none"
+            alert("不会自动隐藏")
+            document.onclick=function()
+            {
+                return false
+            }
+        }
+        ev.cancelBubble = true
+    }
+    oBtn_list.onclick=function()//选择发送方式隐藏还是显示
+    {
+        oBtn_list_ul.style.display = "none"?"block":"none";
+    }
+    for(var j=0;j<oBtn_list_li.length;j++)//设置发送ul的发送方式
+    {
+        oBtn_list_li[j].index = j;
+        oBtn_list_li[j].onmouseover=function()
+        {
+            for(var i =0;i<oBtn_list_li.length;i++)
+            {
+                oBtn_list_li[i].className =""
+            }
+            this.className="active"
+        }   
+    }
+    oBtn_list_li[0].onclick=function(ev)//按回车发送信息
+    {
+        var ev = ev || window.event;
+        this.parentNode.style.display ="none"
+        oText.onkeydown=function(ev)
+        {
+            var ev =  ev || window.event;
+            if(ev.keyCode == '13')
+            {
+                if(oText.value=="")
+                {
+                    return
+                }
+                else
+                {
+                    createDiv()
+                    event.returnValue = false;
+                }
+            }
+        }
+        ev.cancelBubble = true
+    }
+    oBtn_list_li[1].onclick=function(ev)//ctrl+回车发送信息
+    {
+        var ev = ev || window.event;
+        this.parentNode.style.display ="none"
+        oText.onkeydown=function(ev)
+        {
+            var ev =  ev || window.event;
+            if(ev.ctrlKey && ev.keyCode == 13)
+            {
+                if(oText.value=="")
+                {
+                    return
+                }
+                else
+                {
+                    createDiv()
+                    event.returnValue = false;
+                }
+            }
+        }
+        ev.cancelBubble = true
+    }
+    oBtn.onclick=function()//发送按钮
+    {
+        createDiv()
+    }
+    oClose.onclick=function(ev)//关闭聊天
+    {
+        var ev = ev || window.event
+        ev.cancelBubble =true
+        oWebIm.className="webim_now"
+        oWebIm.style.display = "none"
+        oOpen.style.display ="block"
+        oSend_list.style.display="none"
+        oContent_ul.innerHTML=""
+        oContent.innerHTML =""
+    }
+    function ceshi()//给聊天人选中状态
+    {
+        for(var i=0;i<aContent_li.length;i++)
+        {
+            aContent_li[i].index=i;
+            aContent_li[i].className=""
+            aContent_li[0].className="xuanzhong"
+            aContent_li[i].onclick=function()
+            {
+                for(var i=0;i<aContent_li.length;i++)
+                {
+                    aContent_li[i].className=""
+                }
+                aContent_li[this.index].className="xuanzhong"
+                oList_src.src=""
+                oList_title.innerHTML=""
+                oContent.innerHTML =""
+                oList_src.src = "images/"+aContent_li[this.index].title+".jpg"
+                oList_title.innerHTML = aContent_li[this.index].title
+                getList()
+            }
+        }
+        getList()
+    }
+    function getList()//获取聊天信息
+    {
+        ajax("liaotian.js",function(str)
+        {
+            oContent.innerHTML =""
+            var json = eval("("+str+")")
+            for(var i=0;i<json.list.length;i++)
+            {
+                var oDiv = document.createElement('div')
+                if(json.list[i].type =="speak")
+                {
+                    oDiv.className = "content_r"
+                }
+                else
+                {
+                    oDiv.className = "content_l"
+                }
+                oDiv.innerHTML ='<div class="time">'+json.list[i].time+'</div>'+
+                    '<div class="speak">'+
+                    '<div class="speak_c"><p>'+json.list[i].content+'</p></div>'
+                    +'<div class="speak_arr"></div>'
+                oContent.appendChild(oDiv);
+                startMove(oSendUp,listScroll,oContent)
+                setTimeout(function()
+                {
+                    goScroll(listScroll,oContent)
+                },200);
+            }
+        })
+    }
+    function createDiv()//聊天信息框和时间
+    {
+        var oDiv = document.createElement("div");
+        var oNum = document.getElementById("num")
+        var re=/<[^<>]+>/g;
+        oText.value=oText.value.replace(re,"")
+        oDiv.className = "content_r"
+        oDiv.innerHTML='<div class="time">'+getDate()+'</div>'+
+            '<div class="speak">'+
+            '<div class="speak_c"><p>'+oText.value+'</p></div>'
+            +'<div class="speak_arr"></div>'
+        oContent.appendChild(oDiv);
+        oText.value =""
+        oNum.innerHTML ="140"
+        oNum.style.color=""
+        startMove(oSendUp,listScroll,oContent)
+        setTimeout(function()
+            {
+                goScroll(listScroll,oContent)
+            },200);
+    }
+}
+function startMove(oParent,obj,oContent)//走滚动条+鼠标控制
+{
+    var oDiv = oParent
+    var oDiv2 = obj;
+    var oDiv3 = oContent
+    var disY =0;
+    var T = 0
+    var btn = true
+    if(oDiv.scrollHeight>=oDiv.offsetHeight)
+    {
+        obj.style.display ="block"
+        obj.style.height = (oDiv.offsetHeight / oDiv3.scrollHeight) * oDiv.offsetHeight+"px"
+    }
+    else
+    {
+        obj.style.display ="none"
+        // alert(oParent.scrollHeight)
+        // alert(oParent.offsetHeight)
+    }
+    oDiv2.onmousedown=function(ev)
+    {
+        var ev = ev || window.event
+        disY = ev.clientY -oDiv2.offsetTop;
+        if(oDiv2.setCapture)
+        {
+            oDiv2.setCapture()
+        }
+        document.onmousemove=function(ev)
+        {
+            var ev = ev || window.event;
+            T =  ev.clientY -disY
+            if(T<0)
+            {
+                T=0
+            }
+            else if(T>oParent.offsetHeight-obj.offsetHeight)
+            {
+                T = oParent.offsetHeight-obj.offsetHeight
+            }
+            oDiv2.style.top = T +"px"
+            var scrY=T/(oDiv.offsetHeight-oDiv2.offsetHeight);
+            oDiv3.style.top=scrY*(oDiv.offsetHeight-oDiv3.offsetHeight)+"px"
+        }
+        document.onmouseup=function()
+        {
+            document.onmousemove=null;
+            document.onmouseup = null;
+            if(oDiv2.setCapture)
+            {
+                oDiv2.releaseCapture()
+            }
+        }
+        return false
+    }
+    if(oDiv2.addEventListener)
+    {
+        oDiv.addEventListener("DOMMouseScroll",toRun,false)
+        oDiv2.addEventListener("DOMMouseScroll",toRun,false)
+    }
+    oDiv.onmousewheel = toRun
+    oDiv2.onmousewheel = toRun
+    function toRun(ev)
+    {
+        var ev = ev || window.event;
+        if(ev.detail)
+        {
+            btn=ev.detail>0? true : false;
+        }
+        else
+        {
+            btn = ev.wheelDelta<0 ? true : false;
+        }
+        if(btn)
+        {
+            T = oDiv2.offsetTop + 10;
+        }
+        else
+        {
+            T = oDiv2.offsetTop - 10;
+        }
+        if(T<0)
+        {
+            T=0;
+        }
+        else if(T>oDiv.offsetHeight-oDiv2.offsetHeight)
+        {
+            T=oDiv.offsetHeight-oDiv2.offsetHeight
+        }
+        if(T<0)
+        {
+            T=0
+        }
+        else if(T>oParent.offsetHeight-obj.offsetHeight)
+        {
+            T = oParent.offsetHeight-obj.offsetHeight
+        }
+        oDiv2.style.top = T +"px"
+        var scrY=T/(oDiv.offsetHeight-oDiv2.offsetHeight);
+        oDiv3.style.top=scrY*(oDiv.offsetHeight-oDiv3.offsetHeight)+"px"
+    }
+}
+function ajax(url, fnOnSucc, fnOnFaild)//ajax(get方法)
+{
+    var oAjax=null;
+
+    //1.初始化Ajax对象
+    if(window.ActiveXObject)
+    {
+        oAjax=new ActiveXObject("Msxml2.XMLHTTP")||new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    else
+    {
+        oAjax=new XMLHttpRequest();
+    }
+
+    //2.建立连接
+    oAjax.open('get', url, true);
+
+    //3.监控请求状态
+    oAjax.onreadystatechange=function ()
+    {
+        //readyState->Ajax对象内部的状态
+        //status->服务器返回的请求结果
+        if(oAjax.readyState==4)
+        {
+            //alert('请求完成，请求结果是：'+oAjax.status);
+            //alert(oAjax.responseText);
+            if(oAjax.status==200)
+            {
+                if(fnOnSucc)
+                {
+                    fnOnSucc(oAjax.responseText);
+                }
+            }
+            else
+            {
+                if(fnOnFaild)
+                {
+                    fnOnFaild(oAjax.status);
+                }
+            }
+        }
+        //alert(oAjax.readyState);
+        //alert(typeof oAjax.status);
+    };
+
+    //4.发送请求
+    oAjax.send();
+
+    //5.*清理
+    //oAjax.onreadystatechange=null;
+    //oAjax=null;
+}
+function ajaxPost(url, sData, fnOnSucc, fnOnFaild)//ajax(post方法)
+{
+    var oAjax=null;
+
+    //1.初始化Ajax对象
+    if(window.ActiveXObject)
+    {
+        oAjax=new ActiveXObject("Msxml2.XMLHTTP")||new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    else
+    {
+        oAjax=new XMLHttpRequest();
+    }
+
+    //2.建立连接
+    oAjax.open('post', url, true);
+
+    //3.监控请求状态
+    oAjax.onreadystatechange=function ()
+    {
+        //readyState->Ajax对象内部的状态
+        //status->服务器返回的请求结果
+        if(oAjax.readyState==4)
+        {
+            //alert('请求完成，请求结果是：'+oAjax.status);
+            //alert(oAjax.responseText);
+            if(oAjax.status==200)
+            {
+                if(fnOnSucc)
+                {
+                    fnOnSucc(oAjax.responseText);
+                }
+            }
+            else
+            {
+                if(fnOnFaild)
+                {
+                    fnOnFaild(oAjax.status);
+                }
+            }
+        }
+        //alert(oAjax.readyState);
+        //alert(typeof oAjax.status);
+    };
+
+    //4.发送请求
+    oAjax.setRequestHeader('content-type', 'urlencode');
+    oAjax.send(sData);
+}
+function getClass(obj,aClass)//返回一组以aClass命名的对象
+{
+    var aList = obj.getElementsByTagName("*");
+    var re = new RegExp('\\b'+aClass+'\\b','g');
+    var result = []
+    for(var i=0;i<aList.length;i++)
+    {
+        if(re.test(aList[i].className))
+        {
+            result.push(aList[i])
+        }
+    }
+    return result
+}
+function ClientHeight()//或者页面可视区的高度
+{
+    return document.documentElement.clientHeight || document.body.clientHeight;
+}
+function scrollT()//返回滚动条
+{
+    return document.documentElement.scrollTop || document.body.scrollTop;
+}
+function toLength(obj)//计算发布框里的时间，不满两位，为两位
+{
+    if(obj<"10")
+    {
+        obj = "0"+obj
+    }
+    return obj
+}
+function getDate()//获取当前聊天发布的时间
+{
+    var oDate = new Date();
+    var now = toLength(oDate.getHours())+":"
+    now = now + toLength(oDate.getMinutes());
+    return now
+}
+function goScroll (obj,oContent)//滚动条 和聊天窗口文字 一直在底部
+{
+    obj.style.top = ""
+    obj.style.bottom = "0"
+    var scrY= obj.offsetTop/(obj.parentNode.offsetHeight-obj.offsetHeight)
+    oContent.style.top=scrY*(obj.parentNode.offsetHeight-oContent.offsetHeight)+"px"
+}
+function addEvent(obj,event,fn)//时间绑定
+{
+    if(obj.addEventListener)
+    {
+        obj.addEventListener(event,fn,false)
+    }
+    else
+    {
+        obj.attachEvent("on"+event,function()
+        {
+            fn.call(obj)
+        })
+    }
+}
+function removeEvent(obj, event, fn)//接触绑定事件
+{
+    if (obj.removeEventListener)
+    {
+        obj.removeEventListener(event, fn, false);
+    }
+    else
+    {
+        obj.detachEvent("on"+event,fn);
+    }
+}
+function getLength(str)//发布文字显示
+{
+    return String(str).replace(/[^\x00-\xff]/g).length;
+}
+function toChange()//更改文字
+{
+    var oValue = document.getElementById("text")
+    var num = Math.ceil(getLength(oValue.value)/2);
+    var oNum  = document.getElementById("num")
+    if(!oNum){return}
+    if(num<=140)
+    {
+        oNum.innerHTML = 140 - num;
+        oNum.style.color = '';
+    }
+    else
+    {
+        oNum.innerHTML = - 140-num ;
+        oNum.style.color = 'red';
+    }
+}
+function getStyle(obj,attr)//获取样式
+{
+    if(obj.currentStyle)
+    {
+        return obj.currentStyle[attr]
+    }
+    else
+    {
+        return getComputedStyle(obj,false)[attr]
+    }
+}
+function startRun(obj,json,fn)//做缓冲运动
+{
+    clearInterval(obj.time);
+    var icur = 0;
+    var ispeed = 0;
+    obj.time=setInterval(function(){
+        var btn = true;
+        for(var str in json)
+        {
+            if(str=='opacity')
+            {
+                icur = Math.round(parseFloat(getStyle(obj,'opacity'))*100);
+            }
+            else
+            {
+                icur = parseInt(getStyle(obj,str));
+            }
+            ispeed = (json[str]-icur)/8;
+            ispeed = ispeed >0 ? Math.ceil(ispeed):Math.floor(ispeed);
+            if(icur != json[str])
+            {
+                btn = false;
+            }
+            if(icur=='opacity')
+            {
+                obj.style.filter='alpha(opacity='+(icur+ispeed)+')';
+                obj.style.opacity=(icur+ispeed)/100;
+            }
+            else
+            {
+                obj.style[str]=icur+ispeed+'px';
+            }
+            if(btn)
+            {
+                clearInterval(obj.time);
+                if(fn)
+                {
+                    fn.call(obj);
+                }
+            }
+        }
+    },30);
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<style type='text/css'>
+		div{
+			background-color: #cccccc;	
+		}		
+		#first{
+			width: 100px;
+			height: 150px;
+			float: left;
+		}
+		#second{
+			position: absolute;
+			clear: left;
+			float: left;
+			top: 160px;
+			width: 100px;
+			height: 150px;
+			z-index: -99;
+		}	
+		#third{
+			zoom:1;
+			_margin-left:107px;
+			margin-left: 110px;
+			width: 200px;
+			height: 310px;
+		}
+</style>
+<script language="javascript">
+	function zoom(id,x,y){
+			var obj=document.getElementById(id);
+			console.log(obj);
+			var dW=obj.clientWidth;
+			var dH=obj.clientHeight;
+			
+			obj.onmouseover = function(){
+				console.log("a");
+				this.style.width = dW*x+"px";
+				this.style.height= dH*y+"px";
+				this.style.backgroundColor = "#fddddd";
+				this.style.zIndex = 100;
+			}
+			
+			obj.onmouseout = function(){
+				this.style.width = "";
+				this.style.height ="";
+				this.style.backgroundColor = "";
+				this.style.zIndex = "";			
+			}
+			
+			
+	}
+	window.onload = function(){
+		zoom("first",1.25,1.25);
+	}
+</script>
+</head>
+<body>
+	<div id="first"></div>
+	<div id="second"></div>
+	<div id="third"></div>
+</body>
+</html>

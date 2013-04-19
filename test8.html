@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>浮动测试</title>
+
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	
+	<style type="text/css">
+		body{ text-align: center;}
+		h2{
+			clear: both;
+			margin:10px 0;		
+		}
+		.stage{
+			width: 220px;
+			margin:0 auto 20px;
+			padding:0 0 10px;
+			background-color: yellow;
+		}
+		.col{
+			float: left;
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			border:1px solid #000;
+			-webkit-box-shadow:0 0 8px #00f;
+			-moz-box-shadow:0 0 8px #00f;
+			box-shadow:0 0 8px #00f;
+		}		
+		.col:hover{
+			-webkit-transform:rotate(45deg);
+			-moz-transform:rotate(45deg);		
+		}
+		.stage-right{
+			float: right;		
+		}
+		.group:after{
+			visibility:hidden;
+			display: block;
+			content: '';
+			font-size: 0;
+			height: 0;
+			clear: both;
+			zoom: 1;
+		}
+		/* 或者使用 .clearfix 来清除浮动*/
+		.clearfix:after{
+			visibility: hidden;
+			display:block;
+			content:"";
+			height:0;
+			clear: both;
+			font-size:0;
+		}
+		.clearfix{
+			display:inline-table;
+		}
+		* html .clearfix{
+			height:1%;		
+		}
+		.clearfix{
+			display: block;		
+		}
+
+		hr{
+			clear: both;
+			margin:2em 0;		
+		}
+	</style>
+<body>
+	<h1>Impact of float clearing methods on CSS3 box-shadow and transforms</h1>
+	<a href="http://aloestudios.com/2009/12/goodbye-overflow-clearing-hack/">read the blog post</a>
+	<h2>No Float Clearing Applied</h2>
+	<div class="stage">
+		<div class="stage-left col">
+			
+		</div>
+		<div class="stage-right col">
+			
+		</div>
+	</div>
+	
+	<hr />
+	
+	<h2>Clearfix Applied</h2>
+	<div class="stage group">
+		<div class="stage-left col">
+			
+		</div>
+		<div class="stage-right col">
+			
+		</div>
+	</div>
+	
+	<hr />
+	
+	<h2>Overflow: hidden; Applied</h2>
+	<div class="stage" style="overflow: hidden;">
+		<div class="stage-left col">
+			
+		</div>
+		<div class="stage-right col">
+			
+		</div>
+	</div>
+
+	<hr />
+
+	<h2>Overflow: auto; Applied</h2>
+	<div class="stage" style="overflow: auto;">
+		<div class="stage-left col">
+			
+		</div>
+		<div class="stage-right col">
+			
+		</div>
+	</div>
+
+</body>

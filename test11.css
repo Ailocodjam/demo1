@@ -1,0 +1,81 @@
+
+#balls{
+    width:720px;
+    height:60px;
+    padding:10px;
+    border:1px solid #ccc;
+    margin-bottom:20px;
+}
+#balls li{
+    width:60px;
+    height:60px;
+    float:left;
+}
+#libra{
+    position:relative;
+    width:740px;
+    height:420px;
+    background:url(libra_1.png) no-repeat 50% 100%;
+}
+#libra .platform{
+    width:240px;
+    height:230px;
+    background:url(platform.png) no-repeat 50% 100%;
+}
+#libra .platform-left{
+    position:absolute;
+    left:0px;
+}
+#libra .platform-right{
+    position:absolute;
+    right:0px;
+}
+#libra .platform-region{
+    height:160px;
+    border:dotted 2px #ccc;
+}
+#libra .blance{
+    position:absolute;
+    width:100%;
+    height:120px;
+    top:190px;
+    background:url(blance_1.png) no-repeat 50% -960px;
+}
+#operation{
+    text-align:center;
+    padding:20px 0;
+}
+#do-weight{
+    font-size:18px;
+    line-height:18px;
+    padding:6px 12px;
+}
+#operation-record{
+    margin-top:20px;
+    display:none;
+}
+#result{
+    margin-top:40px;
+    line-height:24px;
+}
+#result p{
+    margin-bottom:20px;
+}
+#result .btn{
+    text-align:center;
+}
+#result button{
+    padding:6px 12px;
+    font-size:18px;
+    line-height:24px;
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title></title>
+		
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+	 	
+	<style type="text/css">
+		body {
+			font-family: "微软雅黑", "monaco", monospace;
+			font-size: 14px;
+		}
+		#wrapper{
+			width:740px;
+			margin:0 auto;
+			line-height:20px;
+			padding-bottom:20px;
+		}	
+		h1{
+			font-size:60px;
+			line-height:60px;
+			padding:40px 0 ;
+		}
+			
+		#desc{
+			padding-bottom:  40px;		
+		}		
+		#desc strong{
+			font-size: 120%;
+			padding:0 4px;
+			color:#f00;		
+		}
+		
+		#page{
+			text-align:center;		
+			padding-top:40px;
+		}
+		#page span{
+			display:inline-block;
+			color:#fff;
+			background: #090;
+			padding:4px 12px;		
+		}
+		#page em{
+			display:block;
+			text-align:center;
+			margin-top: 10px;
+			font-style: normal;		
+		}
+		
+		#platform{
+			position:relative;
+			height:400px;
+			border:dotted 2px #ccc;
+			overflow:hidden;			
+		}		
+		h1{
+			margin-bottom: 40px;		
+		}
+		.pin{
+			width:45px;
+			height:45px;
+			background:url(pin.png) no-repeat 0 0;	
+			z-index: 999;
+		}
+		#balloon{
+			position:absolute;
+			top:50px;
+			left:400px;
+			width:176px;
+			height:310px;
+			z-index: -1;
+			background:url(balloon.png) no-repeat 0 0 ;
+		}
+		#test{
+			width:100px;
+			height:100px;
+			border:solid 1px #ccc;
+			position:relative;
+			left:300px;
+			top:50px;
+			display: none;
+			border-radius: 60px;
+		}
+		#suc{
+			background: #fff;
+			z-index:0;
+			width:auto;
+			display: none;
+			margin-top:20px;
+			text-align: center;
+		}
+		#cssContainer{
+			padding-top:40px;
+		}
+		#cssContainer p.c{
+			margin-left :60px;
+		}
+		#cssContainer textarea{
+				width:500px;
+				height:150px;
+				margin-left : 60px;
+				border:solid 1px #ccc;
+		}
+			
+	</style>
+</head>	
+<body>
+	<div id="wrapper">
+		<h1>扎气球</h1>
+		<div id="desc">
+		
+		</div>
+		<div id="platform">
+			<div id="pin" class="pin"></div>
+			<div id="balloon"></div>
+			<div id="suc"></div>
+		</div>
+		<div id="cssContainer">
+			<p>.pin{</p>
+			<p class="c">width:45px;</p>
+			<p class="c">height:44px;<p>
+			<p class="c">background:url(pin.png) no-repeat 0 0;</p>
+			<p class="c">z-index:9999;</p>
+			<textarea id="newCSS" placeholder="请在这里填写样式"></textarea>		
+			<p>}</p>
+			<p><button id="test" value="lru tset a tsuj">test</button></p>		
+		</div>
+	</div>
+	<div id="page">
+		<span>lalala:</span><br />
+		<em>&copy;lgm</em>
+	</div>
+	
+	<script type="text/javascript" >
+		(function(){
+			var balloon = $('#balloon'),
+			newCSS = $('#newCSS'),
+			ballPostion = balloon.position(),
+			ballWidth = balloon.width(),
+			ballHeight = balloon.height(),
+			centerOfBallon,				
+			isEnter = false,	
+			radius = 90,		
+			
+			getCenterOfBalloon = function(){
+			//	 console.log("left="+ballPostion.left+",top="+ballPostion.top);
+				 var top =ballPostion.top+radius,
+				 left = ballPostion.left+ballWidth/2;
+			//	 console.log("left="+left+",top="+top);
+				 return {
+					left:left,
+					top:top				 
+				 }
+			},
+				
+			checkPosition = function(e){
+				var pin = $(this),
+				pinPosition = getPinPosition(pin);
+			//	console.log("checkPosition");
+				if(isPinInBalloon(pinPosition)){
+					if(!isEnter){
+						console.log("trigger enter");
+						pin.triggerHandler('enter');					
+					}				
+					isEnter = true;
+				}else{
+					console.log("pin not in balloon");
+					isEnter = false;				
+				}
+			},
+			isPinInBalloon = function(pinPosition){
+			//	console.log('juli:'+Math.sqrt(Math.pow((centerOfBallon.left-pinPosition.left),2)+Math.pow((centerOfBallon.top-pinPosition.top),2)));
+				return Math.sqrt(Math.pow((centerOfBallon.left-pinPosition.left),2)+Math.pow((centerOfBallon.top-pinPosition.top),2))<=radius;
+			},
+			getPinPosition = function(el){
+				var width = el.width(),
+				height = el.height(),
+				position = el.position(),
+				//console.log("pin position:"+position.left+","+position.top);
+				marginLeft = parseFloat(el.css('marginLeft')),
+				marginTop = parseFloat(el.css('marginTop'));
+				return {
+					left:position.left+marginLeft+width,
+					top :position.top+marginTop+height
+				}			
+			},
+			
+			bang = function(){
+				 setTimeout(function(){
+					 	balloon.css('background-position',"-176px 50%");
+				 },500);
+				  setTimeout(function(){
+					 	balloon.css('background-position',"-352px 50%");
+				 },1000);
+				  setTimeout(function(){
+					 	balloon.css('background-position',"-528px 50%");
+				 },1500);
+				  setTimeout(function(){
+					 	balloon.css('background-position',"-704px 50%");
+				 },2000);
+				 setTimeout(function(){
+						$("#platform .pin").fadeOut();
+					   balloon.fadeOut(function(){
+							var val = $('#test').val().split('').reverse().join('').substr(7);				   
+						   $("#suc").html(val).fadeIn();
+					   });	 
+				 },2500);
+			},
+			parseInput = function(val){
+				var s = val.replace(/\n/g,';').replace(/\s/g,''),
+				a = s.split(";"),
+				item,
+				k,
+				ret = {};
+				
+				for(var i=0,l=a.length;i<l;i++){
+						item = a[i];
+						if(!item) continue;
+						k = item.split(":");						
+						ret[k[0]] = k[1];			
+				}
+				return ret;
+			},
+
+			movePin = function(pin,val){
+			      console.log(val);
+					pin.css(parseInput(newCSS.val()));
+					pin.triggerHandler('move');
+					console.log("movePin");
+			},			
+			
+			init = function(){
+				var pin = $('#pin');
+				centerOfBallon = getCenterOfBalloon();
+				pin.on('enter',bang);
+				pin.on('move',checkPosition);
+				console.log("init");				
+				newCSS.on('keyup',function(){
+					console.log("keyup");
+					movePin(pin,parseInput(newCSS.val()));
+				});
+				
+			}();
+
+})();
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+

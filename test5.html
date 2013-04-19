@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>demo–瀑布流</title>
+    
+    <style type="text/css">
+		* { margin:0;padding:0; }		
+		ul,li{list-style-type:none;}		
+		#div{ width:925px; height:auto; margin：20px auto; }
+		ul { width:220px;flloat: left;margin:5px; }
+    </style>
+	 <script type="text/javascript" src="/javascripts/jquery-1.7.1.min.js"></script>
+</head>
+<body>
+	<div id="div">
+		<ul>
+			<li>
+				<img src="/images/jm.jpg">
+				<p>11111</p>			
+			</li>		
+			<li>
+				<img src="/images/jm.jpg">
+				<p>22222</p>			
+			</li>		
+			<li>
+				<img src="/images/jm.jpg">
+				<p>33333</p>			
+			</li>		
+		</ul>
+		<ul>
+			<li>
+				<img src="/images/jm.jpg">
+				<p>11111</p>			
+			</li>		
+			<li>
+				<img src="/images/jm.jpg">
+				<p>22222</p>			
+			</li>		
+			<li>
+				<img src="/images/jm.jpg">
+				<p>33333</p>			
+			</li>		
+		</ul>
+	</div>
+	
+	 <script type="text/javascript">
+    	window.onload = function(){
+			var oDiv = document.getElementById("div");
+			var oUl  = document.getElementsByTagName("ul");
+			window.onscroll = function()
+			{
+				var clientH = document.documentElement.clientHeight;
+				var scrollH = document.documentElement.scrollTop || document.body.scrollTop;
+					
+				for(var i=0;i<oUl.length;i++)
+				{
+					var aLi = oUl[i].getElementsByTagName("li");
+					var lastL = aLi[aLi.length-1];				 	
+				 	if(toTop(lastL)<clientH+scrollH)
+				 	{
+						$.ajax({
+							url:'/getImages',
+							
+							success:function(data){
+							//	var data = $.parseJSON(data);
+								var json = eval('('+data+')');
+								for(var i=0;i<json.list.length;i++){
+									var list = json.list[i];
+									for(var j=0;j<list.src.length;j++){
+										var oLi = document.createElement("li");
+										oLi.innerHTML = '<img src="'+list.src[j]+'"/><p>'+list.title[j]+'</p>';
+										oUl[i].appendChild(oLi);
+									}					
+								}
+								console.log("ajax success!data="+data);
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown){
+								console.log("ajax error!!"+XMLHttpRequest + '#' + textStatus + '#' + errorThrown);
+							},
+							complete: function(a,b){
+							}	
+						});    						
+					}
+				}
+			}
+			
+			function toTop(obj){
+				var top = 0;
+				while(obj){
+					top+=obj.offsetTop;
+					obj = obj.offsetParent;				
+				}			
+				return top;
+			}
+			
+    	}    	
+		
+		/*ajax 部分*/    	
+    	function ajax(url,sFn,nFn)
+	{
+        var oAjax=null;
+        if(window.ActiveXObject)
+        {
+                oAjax=new ActiveXObject("Microsoft.XMLHTTP")
+        }
+        else
+        {
+                oAjax=new XMLHttpRequest();
+        }
+        oAjax.open("GET",url,true)
+        oAjax.send();
+        oAjax.onreadystatechange=function()
+        {
+                if(oAjax.readyState==4)
+                {
+                        if(oAjax.status==200)
+                        {
+                                if(sFn)
+                                {
+                                        sFn(oAjax.responseText)
+                                }
+                        }
+                        else
+                        {
+                                if(nFn)
+                                {
+                                        nFn(oAjax.status)
+                                }
+                        }
+                }
+        }
+}
+     </script>
+</body>
+</html>
+
